@@ -1,5 +1,5 @@
 ﻿namespace IDE_Project {
-    partial class Code_Editor {
+    partial class CodeEditor {
         /// <summary>
         ///  Required designer variable.
         /// </summary>
@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent() {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Code_Editor));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CodeEditor));
             codeRichTextBox = new RichTextBox();
             tree = new TreeView();
             ımageList1 = new ImageList(components);
@@ -59,29 +59,30 @@
             searchToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator5 = new ToolStripSeparator();
             aboutToolStripMenuItem1 = new ToolStripMenuItem();
+            toolStripMenuItem1 = new ToolStripMenuItem();
             folderBrowserDialog1 = new FolderBrowserDialog();
             toolStripContainer1 = new ToolStripContainer();
             minButton = new Button();
             maxButton = new Button();
-            signInMenuStrip = new MenuStrip();
-            signInToolStripMenuItem = new ToolStripMenuItem();
+            accountMenuStrip = new MenuStrip();
+            accountToolStripMenuItem = new ToolStripMenuItem();
             exitButton = new Button();
             panel1 = new Panel();
             menuStrip1.SuspendLayout();
+            toolStripContainer1.TopToolStripPanel.SuspendLayout();
             toolStripContainer1.SuspendLayout();
-            signInMenuStrip.SuspendLayout();
+            accountMenuStrip.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // codeRichTextBox
             // 
             codeRichTextBox.AcceptsTab = true;
-            codeRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             codeRichTextBox.BackColor = Color.FromArgb(31, 31, 31);
             codeRichTextBox.BorderStyle = BorderStyle.None;
             codeRichTextBox.Font = new Font("Consolas", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             codeRichTextBox.ForeColor = Color.White;
-            codeRichTextBox.Location = new Point(257, 41);
+            codeRichTextBox.Location = new Point(257, 40);
             codeRichTextBox.Name = "codeRichTextBox";
             codeRichTextBox.Size = new Size(755, 523);
             codeRichTextBox.TabIndex = 1;
@@ -91,7 +92,6 @@
             // 
             // tree
             // 
-            tree.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             tree.BackColor = Color.FromArgb(24, 24, 24);
             tree.BorderStyle = BorderStyle.None;
             tree.ForeColor = Color.LightGray;
@@ -111,13 +111,14 @@
             // 
             // menuStrip1
             // 
+            menuStrip1.AutoSize = false;
             menuStrip1.BackColor = Color.FromArgb(24, 24, 24);
             menuStrip1.Dock = DockStyle.None;
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem1, wievToolStripMenuItem, runToolStripMenuItem, toolsToolStripMenuItem, helpToolStripMenuItem1 });
-            menuStrip1.Location = new Point(11, 4);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, editToolStripMenuItem1, wievToolStripMenuItem, runToolStripMenuItem, toolsToolStripMenuItem, helpToolStripMenuItem1, toolStripMenuItem1 });
+            menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.RenderMode = ToolStripRenderMode.System;
-            menuStrip1.Size = new Size(258, 24);
+            menuStrip1.Size = new Size(255, 24);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -136,7 +137,7 @@
             newWindowItem.Name = "newWindowItem";
             newWindowItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.N;
             newWindowItem.Size = new Size(220, 22);
-            newWindowItem.Text = "New Window";
+            newWindowItem.Text = "&New Window";
             newWindowItem.Click += newWindowItem_Click;
             // 
             // toolStripSeparator2
@@ -151,7 +152,7 @@
             openFolderItem.Name = "openFolderItem";
             openFolderItem.ShortcutKeys = Keys.Control | Keys.K;
             openFolderItem.Size = new Size(220, 22);
-            openFolderItem.Text = "Open Folder";
+            openFolderItem.Text = "&Open Folder";
             openFolderItem.Click += openFolderItem_Click;
             // 
             // toolStripSeparator6
@@ -164,7 +165,7 @@
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             saveToolStripMenuItem.Size = new Size(220, 22);
-            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Text = "&Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
@@ -179,7 +180,7 @@
             exitItem.Name = "exitItem";
             exitItem.ShortcutKeys = Keys.Alt | Keys.F4;
             exitItem.Size = new Size(220, 22);
-            exitItem.Text = "Exit Window";
+            exitItem.Text = "&Exit Window";
             exitItem.Click += exitItem_Click;
             // 
             // editToolStripMenuItem1
@@ -333,6 +334,11 @@
             aboutToolStripMenuItem1.Size = new Size(122, 22);
             aboutToolStripMenuItem1.Text = "&About...";
             // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new Size(12, 20);
+            // 
             // toolStripContainer1
             // 
             // 
@@ -345,14 +351,20 @@
             toolStripContainer1.TabIndex = 4;
             toolStripContainer1.Text = "toolStripContainer1";
             // 
+            // toolStripContainer1.TopToolStripPanel
+            // 
+            toolStripContainer1.TopToolStripPanel.Controls.Add(menuStrip1);
+            // 
             // minButton
             // 
-            minButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            minButton.AutoSize = true;
             minButton.BackColor = Color.FromArgb(24, 24, 24);
-            minButton.Location = new Point(926, 4);
+            minButton.BackgroundImageLayout = ImageLayout.None;
+            minButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
+            minButton.FlatStyle = FlatStyle.Flat;
+            minButton.ForeColor = Color.LightGray;
+            minButton.Location = new Point(928, 4);
             minButton.Name = "minButton";
-            minButton.Size = new Size(24, 25);
+            minButton.Size = new Size(24, 24);
             minButton.TabIndex = 6;
             minButton.Text = "_";
             minButton.UseVisualStyleBackColor = false;
@@ -360,88 +372,96 @@
             // 
             // maxButton
             // 
-            maxButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            maxButton.AutoSize = true;
             maxButton.BackColor = Color.FromArgb(24, 24, 24);
-            maxButton.Location = new Point(956, 4);
+            maxButton.BackgroundImageLayout = ImageLayout.None;
+            maxButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
+            maxButton.FlatStyle = FlatStyle.Flat;
+            maxButton.Font = new Font("Segoe UI", 9F);
+            maxButton.ForeColor = Color.LightGray;
+            maxButton.Location = new Point(958, 4);
             maxButton.Name = "maxButton";
             maxButton.Size = new Size(24, 24);
             maxButton.TabIndex = 5;
+            maxButton.Text = "□";
             maxButton.UseVisualStyleBackColor = false;
             maxButton.Click += maxButton_Click;
             // 
-            // signInMenuStrip
+            // accountMenuStrip
             // 
-            signInMenuStrip.BackColor = Color.FromArgb(24, 24, 24);
-            signInMenuStrip.Dock = DockStyle.None;
-            signInMenuStrip.Items.AddRange(new ToolStripItem[] { signInToolStripMenuItem });
-            signInMenuStrip.Location = new Point(828, 4);
-            signInMenuStrip.Name = "signInMenuStrip";
-            signInMenuStrip.Size = new Size(63, 24);
-            signInMenuStrip.TabIndex = 0;
-            signInMenuStrip.Text = "menuStrip2";
+            accountMenuStrip.AutoSize = false;
+            accountMenuStrip.BackColor = Color.FromArgb(24, 24, 24);
+            accountMenuStrip.Dock = DockStyle.None;
+            accountMenuStrip.Items.AddRange(new ToolStripItem[] { accountToolStripMenuItem });
+            accountMenuStrip.Location = new Point(787, 4);
+            accountMenuStrip.Name = "accountMenuStrip";
+            accountMenuStrip.Size = new Size(112, 24);
+            accountMenuStrip.TabIndex = 0;
+            accountMenuStrip.Text = "menuStrip2";
             // 
-            // signInToolStripMenuItem
+            // accountToolStripMenuItem
             // 
-            signInToolStripMenuItem.ForeColor = Color.LightGray;
-            signInToolStripMenuItem.Name = "signInToolStripMenuItem";
-            signInToolStripMenuItem.Size = new Size(55, 20);
-            signInToolStripMenuItem.Text = "Sign In";
-            signInToolStripMenuItem.Click += signInToolStripMenuItem_Click;
+            accountToolStripMenuItem.ForeColor = Color.LightGray;
+            accountToolStripMenuItem.Name = "accountToolStripMenuItem";
+            accountToolStripMenuItem.Size = new Size(98, 52);
+            accountToolStripMenuItem.Text = "accountButton";
+            accountToolStripMenuItem.Click += accountToolStripMenuItem_Click;
             // 
             // exitButton
             // 
-            exitButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            exitButton.AutoSize = true;
             exitButton.BackColor = Color.FromArgb(24, 24, 24);
-            exitButton.Location = new Point(986, 4);
+            exitButton.BackgroundImageLayout = ImageLayout.None;
+            exitButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
+            exitButton.FlatStyle = FlatStyle.Flat;
+            exitButton.ForeColor = Color.LightGray;
+            exitButton.Location = new Point(988, 4);
             exitButton.Name = "exitButton";
-            exitButton.Size = new Size(24, 25);
+            exitButton.Size = new Size(24, 24);
             exitButton.TabIndex = 1;
-            exitButton.Text = "X";
+            exitButton.Text = "x";
             exitButton.UseVisualStyleBackColor = false;
             exitButton.Click += exitButton_Click;
             // 
             // panel1
             // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.AutoSize = true;
             panel1.Controls.Add(exitButton);
-            panel1.Controls.Add(menuStrip1);
             panel1.Controls.Add(toolStripContainer1);
-            panel1.Controls.Add(signInMenuStrip);
+            panel1.Controls.Add(accountMenuStrip);
             panel1.Controls.Add(minButton);
             panel1.Controls.Add(maxButton);
-            panel1.Location = new Point(-2, 1);
+            panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1023, 34);
+            panel1.Size = new Size(1024, 566);
             panel1.TabIndex = 7;
-            panel1.Paint += panel1_Paint;
             // 
-            // Code_Editor
+            // CodeEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             BackColor = Color.FromArgb(24, 24, 24);
             ClientSize = new Size(1024, 576);
-            Controls.Add(panel1);
             Controls.Add(tree);
             Controls.Add(codeRichTextBox);
+            Controls.Add(panel1);
             ForeColor = Color.White;
             FormBorderStyle = FormBorderStyle.None;
             MainMenuStrip = menuStrip1;
-            Name = "Code_Editor";
+            Name = "CodeEditor";
             StartPosition = FormStartPosition.CenterScreen;
-            Load += Code_Editor_Load;
-            Resize += Code_Editor_Resize;
+            Load += CodeEditor_Load;
+            Resize += CodeEditor_Resize;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             toolStripContainer1.ResumeLayout(false);
             toolStripContainer1.PerformLayout();
-            signInMenuStrip.ResumeLayout(false);
-            signInMenuStrip.PerformLayout();
+            accountMenuStrip.ResumeLayout(false);
+            accountMenuStrip.PerformLayout();
             panel1.ResumeLayout(false);
-            panel1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -483,10 +503,11 @@
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripContainer toolStripContainer1;
         private Button maxButton;
-        private MenuStrip signInMenuStrip;
-        private ToolStripMenuItem signInToolStripMenuItem;
+        private MenuStrip accountMenuStrip;
+        private ToolStripMenuItem accountToolStripMenuItem;
         private Button exitButton;
         private Button minButton;
         private Panel panel1;
+        private ToolStripMenuItem toolStripMenuItem1;
     }
 }

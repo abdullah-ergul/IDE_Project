@@ -1,21 +1,51 @@
+using System.Data;
+using System.Data.SqlClient;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace IDE_Project {
 
-    public partial class Code_Editor : Form {
+    public partial class CodeEditor : Form {
 
-        public Code_Editor() {
+        SqlConnection connection = new SqlConnection(@"Data Source = ABDULLAH\SQLEXPRESS; Initial Catalog = IDE_PROJECT_DB; Integrated Security = True; Encrypt = False");
+        private string username;
+        private string password;
+
+        public CodeEditor(string username, string password) {
             InitializeComponent();
             this.SetStyle(ControlStyles.ResizeRedraw, true);
             panel1.MouseDown += new MouseEventHandler(move_window);
+            this.username = username;
+            this.password = password;
         }
 
-        private void Code_Editor_Load(object sender, EventArgs e) {
-            originalFormsSize = new Rectangle(0, 0, 1024, 576); //new Rectangle(this.Location.X, this.Location.Y, this.Width, this.Height);
-            exitButtonOriginalRectangle = new Rectangle(24, 25, 986, 4); //new Rectangle(exitButton.Location.X, exitButton.Location.Y, exitButton.Width, exitButton.Height);
-            resizeControl(exitButtonOriginalRectangle, exitButton);
+        private void CodeEditor_Load(object sender, EventArgs e) {
+            //originalFormsSize = new Rectangle(this.Location.X, this.Location.Y, this.Width, this.Height);
+            originalFormsSize = new Rectangle(0, 0, 1024, 576);
+            //exitButtonOriginalRectangle = new Rectangle(exitButton.Location.X, exitButton.Location.Y, exitButton.Width, exitButton.Height);
+            exitButtonOriginalRectangle = new Rectangle(987, 4, 24, 25);
+            panel1OriginalRectangle = new Rectangle(panel1.Location.X, panel1.Location.Y, panel1.Width, panel1.Height); //new Rectangle(0, 0, 1024, 34);
+                                                                                                                        //resizeControl(exitButtonOriginalRectangle, exitButton);
+            try {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                String query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
+                SqlDataAdapter sda = new SqlDataAdapter(query, connection);
+                DataTable dtbl = new DataTable();
+                sda.Fill(dtbl);
+
+                if (dtbl.Rows.Count > 0) {
+                    accountToolStripMenuItem.Text = dtbl.Rows[0]["user_name"].ToString();
+                }
+                else {
+                    accountToolStripMenuItem.Text = "Sign In";
+                }
+
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private const int cGrip = 16;
@@ -31,6 +61,7 @@ namespace IDE_Project {
 
         private Rectangle originalFormsSize;
         private Rectangle exitButtonOriginalRectangle;
+        private Rectangle panel1OriginalRectangle;
 
         protected override void WndProc(ref Message m) {
             if (m.Msg == 0x84) {
@@ -59,22 +90,19 @@ namespace IDE_Project {
             float xRatio = (float)(this.Width) / (float)(originalFormsSize.Width);
             float yRatio = (float)(this.Height) / (float)(originalFormsSize.Height);
 
-            int newX = (int)(r.Width * xRatio);
-            int newY = (int)(r.Height * yRatio);
+            int newX = (int)(r.Location.X * xRatio);
+            int newY = (int)(r.Location.Y * yRatio);
 
-            //int newWidth = (int)(r.Width * xRatio);
-            //int newHeight = (int)(r.Height * yRatio);
+            int newWidth = (int)(r.Width * xRatio);
+            int newHeight = (int)(r.Height * yRatio);
 
             c.Location = new Point(newX, newY);
-            //c.Size = new Size(newWidth, newHeight);
+            c.Size = new Size(newWidth, newHeight);
         }
 
-        private void Code_Editor_Resize(object sender, EventArgs e) {
-            resizeControl(exitButtonOriginalRectangle, exitButton);
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e) {
-
+        private void CodeEditor_Resize(object sender, EventArgs e) {
+            //resizeControl(exitButtonOriginalRectangle, exitButton);
+            //resizeControl(panel1OriginalRectangle, panel1);
         }
 
         private void exitButton_Click(object sender, EventArgs e) => this.Close();
@@ -89,9 +117,7 @@ namespace IDE_Project {
             }
         }
 
-        private void minButton_Click(object sender, EventArgs e) {
-            this.WindowState = FormWindowState.Minimized;
-        }
+        private void minButton_Click(object sender, EventArgs e) => this.WindowState = FormWindowState.Minimized;
 
         //private void CheckKeyword(List<string> words, Color color, int startIndex) {
         //    foreach (string word in words) {
@@ -111,10 +137,10 @@ namespace IDE_Project {
 
         private void codeRichTextBox_TextChanged(object sender, EventArgs e) {
 
-            string keywords = @"\b(#include|while|for|if|else|static|switch|case|return|break|continue)\b";
+            string keywords = @"\b(include|while|for|if|else|static|switch|case|return|break|continue)\b";
             MatchCollection keywordMatches = Regex.Matches(codeRichTextBox.Text, keywords);
 
-            string types = @"\b(Console)\b";
+            string types = @"\b(void|int|float|double|char|struct|enum|NULL)\b";
             MatchCollection typeMatches = Regex.Matches(codeRichTextBox.Text, types);
 
             string comments = @"(\/\/.+?$|\/\*.+?\*\/)";
@@ -123,7 +149,7 @@ namespace IDE_Project {
             string strings = "\".+?\"";
             MatchCollection stringMatches = Regex.Matches(codeRichTextBox.Text, strings);
 
-            int originalIndex = codeRichTextBox.Text.Length;
+            int originalIndex = codeRichTextBox.SelectionStart;
             int originalLength = codeRichTextBox.SelectionLength;
             Color originalColor = Color.LightGray;
 
@@ -136,25 +162,25 @@ namespace IDE_Project {
             foreach (Match m in keywordMatches) {
                 codeRichTextBox.SelectionStart = m.Index;
                 codeRichTextBox.SelectionLength = m.Length;
-                codeRichTextBox.SelectionColor = Color.FromArgb(45, 122, 214);
+                codeRichTextBox.SelectionColor = Color.FromArgb(197, 134, 192);
             }
 
             foreach (Match m in typeMatches) {
                 codeRichTextBox.SelectionStart = m.Index;
                 codeRichTextBox.SelectionLength = m.Length;
-                codeRichTextBox.SelectionColor = Color.FromArgb(53, 177, 152);
+                codeRichTextBox.SelectionColor = Color.FromArgb(63, 156, 203);
             }
 
             foreach (Match m in commentMatches) {
                 codeRichTextBox.SelectionStart = m.Index;
                 codeRichTextBox.SelectionLength = m.Length;
-                codeRichTextBox.SelectionColor = Color.FromArgb(67, 138, 85);
+                codeRichTextBox.SelectionColor = Color.FromArgb(94, 153, 85);
             }
 
             foreach (Match m in stringMatches) {
                 codeRichTextBox.SelectionStart = m.Index;
                 codeRichTextBox.SelectionLength = m.Length;
-                codeRichTextBox.SelectionColor = Color.FromArgb(206, 118, 75);
+                codeRichTextBox.SelectionColor = Color.FromArgb(206, 145, 120);
             }
 
             codeRichTextBox.SelectionStart = originalIndex;
@@ -162,19 +188,17 @@ namespace IDE_Project {
             codeRichTextBox.SelectionColor = originalColor;
 
             codeRichTextBox.Focus();
-            codeRichTextBox.ScrollToCaret();
+            //codeRichTextBox.ScrollToCaret();
         }
 
         private void newWindowItem_Click(object sender, EventArgs e) {
-            var form = new Code_Editor();
+            var form = new CodeEditor(username, password);
             form.StartPosition = FormStartPosition.Manual;
-            form.Location = new Point(this.Width / 2 , this.Height / 2);
+            form.Location = new Point(this.Width / 2, this.Height / 2);
             form.Show();
         }
 
-        private void exitItem_Click(object sender, EventArgs e) {
-            this.Close();
-        }
+        private void exitItem_Click(object sender, EventArgs e) => this.Close();
 
         private void openFolderItem_Click(object sender, EventArgs e) {
             folderBrowserDialog1.ShowDialog();
@@ -228,12 +252,37 @@ namespace IDE_Project {
 
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e) => File.WriteAllText(((FileInfo)tree.SelectedNode.Tag).FullName, codeRichTextBox.Text);
 
-        }
+        private void accountToolStripMenuItem_Click(object sender, EventArgs e) {
+            try {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                String query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
+                SqlDataAdapter sda = new SqlDataAdapter(query, connection);
+                DataTable dtbl = new DataTable();
+                sda.Fill(dtbl);
 
-        private void signInToolStripMenuItem_Click(object sender, EventArgs e) {
-
+                if (dtbl.Rows.Count > 0) {
+                    DialogResult dialogResult = MessageBox.Show("Do you want to sign out?", "Sign Out", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dialogResult == DialogResult.Yes) {
+                        SignInPage signInPage = new SignInPage();
+                        signInPage.Show();
+                        this.Close();
+                    }
+                    else {
+                        this.Show();
+                    }
+                }
+                else {
+                    SignInPage signInPage = new SignInPage();
+                    signInPage.Show();
+                    this.Close();
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
