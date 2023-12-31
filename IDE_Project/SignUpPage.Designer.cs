@@ -171,6 +171,7 @@
             Controls.Add(exitButton);
             FormBorderStyle = FormBorderStyle.None;
             Name = "SignUpPage";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "LoginPage";
             ResumeLayout(false);
             PerformLayout();

@@ -68,6 +68,7 @@
             accountToolStripMenuItem = new ToolStripMenuItem();
             exitButton = new Button();
             panel1 = new Panel();
+            statisticsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             toolStripContainer1.TopToolStripPanel.SuspendLayout();
             toolStripContainer1.SuspendLayout();
@@ -78,6 +79,7 @@
             // codeRichTextBox
             // 
             codeRichTextBox.AcceptsTab = true;
+            codeRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             codeRichTextBox.BackColor = Color.FromArgb(31, 31, 31);
             codeRichTextBox.BorderStyle = BorderStyle.None;
             codeRichTextBox.Font = new Font("Consolas", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -92,6 +94,7 @@
             // 
             // tree
             // 
+            tree.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             tree.BackColor = Color.FromArgb(24, 24, 24);
             tree.BorderStyle = BorderStyle.None;
             tree.ForeColor = Color.LightGray;
@@ -250,6 +253,7 @@
             // 
             // wievToolStripMenuItem
             // 
+            wievToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { statisticsToolStripMenuItem });
             wievToolStripMenuItem.ForeColor = Color.LightGray;
             wievToolStripMenuItem.Name = "wievToolStripMenuItem";
             wievToolStripMenuItem.Size = new Size(44, 20);
@@ -357,6 +361,7 @@
             // 
             // minButton
             // 
+            minButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             minButton.BackColor = Color.FromArgb(24, 24, 24);
             minButton.BackgroundImageLayout = ImageLayout.None;
             minButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
@@ -372,6 +377,7 @@
             // 
             // maxButton
             // 
+            maxButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             maxButton.BackColor = Color.FromArgb(24, 24, 24);
             maxButton.BackgroundImageLayout = ImageLayout.None;
             maxButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
@@ -388,6 +394,7 @@
             // 
             // accountMenuStrip
             // 
+            accountMenuStrip.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             accountMenuStrip.AutoSize = false;
             accountMenuStrip.BackColor = Color.FromArgb(24, 24, 24);
             accountMenuStrip.Dock = DockStyle.None;
@@ -402,12 +409,13 @@
             // 
             accountToolStripMenuItem.ForeColor = Color.LightGray;
             accountToolStripMenuItem.Name = "accountToolStripMenuItem";
-            accountToolStripMenuItem.Size = new Size(98, 52);
+            accountToolStripMenuItem.Size = new Size(98, 20);
             accountToolStripMenuItem.Text = "accountButton";
             accountToolStripMenuItem.Click += accountToolStripMenuItem_Click;
             // 
             // exitButton
             // 
+            exitButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             exitButton.BackColor = Color.FromArgb(24, 24, 24);
             exitButton.BackgroundImageLayout = ImageLayout.None;
             exitButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
@@ -423,8 +431,6 @@
             // 
             // panel1
             // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.AutoSize = true;
             panel1.Controls.Add(exitButton);
             panel1.Controls.Add(toolStripContainer1);
             panel1.Controls.Add(accountMenuStrip);
@@ -432,8 +438,15 @@
             panel1.Controls.Add(maxButton);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1024, 566);
+            panel1.Size = new Size(1024, 576);
             panel1.TabIndex = 7;
+            // 
+            // statisticsToolStripMenuItem
+            // 
+            statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            statisticsToolStripMenuItem.Size = new Size(180, 22);
+            statisticsToolStripMenuItem.Text = "&Statistics";
+            statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
             // 
             // CodeEditor
             // 
@@ -461,7 +474,6 @@
             accountMenuStrip.PerformLayout();
             panel1.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -509,5 +521,6 @@
         private Button minButton;
         private Panel panel1;
         private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem statisticsToolStripMenuItem;
     }
 }

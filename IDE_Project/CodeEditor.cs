@@ -284,5 +284,9 @@ namespace IDE_Project {
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void statisticsToolStripMenuItem_Click(object sender, EventArgs e) {
+
+        }
     }
 }
