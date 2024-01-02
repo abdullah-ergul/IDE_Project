@@ -47,6 +47,7 @@
             toolStripSeparator4 = new ToolStripSeparator();
             selectAllToolStripMenuItem = new ToolStripMenuItem();
             wievToolStripMenuItem = new ToolStripMenuItem();
+            statisticsToolStripMenuItem = new ToolStripMenuItem();
             runToolStripMenuItem = new ToolStripMenuItem();
             runCFileToolStripMenuItem = new ToolStripMenuItem();
             runPythonFileToolStripMenuItem = new ToolStripMenuItem();
@@ -68,7 +69,6 @@
             accountToolStripMenuItem = new ToolStripMenuItem();
             exitButton = new Button();
             panel1 = new Panel();
-            statisticsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             toolStripContainer1.TopToolStripPanel.SuspendLayout();
             toolStripContainer1.SuspendLayout();
@@ -259,6 +259,13 @@
             wievToolStripMenuItem.Size = new Size(44, 20);
             wievToolStripMenuItem.Text = "&View";
             // 
+            // statisticsToolStripMenuItem
+            // 
+            statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
+            statisticsToolStripMenuItem.Size = new Size(120, 22);
+            statisticsToolStripMenuItem.Text = "&Statistics";
+            statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
+            // 
             // runToolStripMenuItem
             // 
             runToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runCFileToolStripMenuItem, runPythonFileToolStripMenuItem });
@@ -366,6 +373,7 @@
             minButton.BackgroundImageLayout = ImageLayout.None;
             minButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
             minButton.FlatStyle = FlatStyle.Flat;
+            minButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             minButton.ForeColor = Color.LightGray;
             minButton.Location = new Point(928, 4);
             minButton.Name = "minButton";
@@ -382,7 +390,7 @@
             maxButton.BackgroundImageLayout = ImageLayout.None;
             maxButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
             maxButton.FlatStyle = FlatStyle.Flat;
-            maxButton.Font = new Font("Segoe UI", 9F);
+            maxButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             maxButton.ForeColor = Color.LightGray;
             maxButton.Location = new Point(958, 4);
             maxButton.Name = "maxButton";
@@ -420,6 +428,7 @@
             exitButton.BackgroundImageLayout = ImageLayout.None;
             exitButton.FlatAppearance.BorderColor = Color.FromArgb(24, 24, 24);
             exitButton.FlatStyle = FlatStyle.Flat;
+            exitButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             exitButton.ForeColor = Color.LightGray;
             exitButton.Location = new Point(988, 4);
             exitButton.Name = "exitButton";
@@ -440,13 +449,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1024, 576);
             panel1.TabIndex = 7;
-            // 
-            // statisticsToolStripMenuItem
-            // 
-            statisticsToolStripMenuItem.Name = "statisticsToolStripMenuItem";
-            statisticsToolStripMenuItem.Size = new Size(180, 22);
-            statisticsToolStripMenuItem.Text = "&Statistics";
-            statisticsToolStripMenuItem.Click += statisticsToolStripMenuItem_Click;
             // 
             // CodeEditor
             // 

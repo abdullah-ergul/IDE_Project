@@ -74,7 +74,10 @@ namespace IDE_Project {
                 DataTable dtbl = new DataTable();
                 sda.Fill(dtbl);
 
-                if (String.Equals(user_password_again, user_password) && dtbl.Rows.Count == 0) {
+                if (username!=null || user_password!=null || user_password_again!=null) {
+                    MessageBox.Show("Please fill in all options.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (String.Equals(user_password_again, user_password) && dtbl.Rows.Count == 0) {
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = connection;
                     cmd.CommandText = "INSERT INTO USERS(user_name, password) VALUES(@user_name, @password)";

@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IDE_Project {
 
@@ -11,6 +12,8 @@ namespace IDE_Project {
         SqlConnection connection = new SqlConnection(@"Data Source = ABDULLAH\SQLEXPRESS; Initial Catalog = IDE_PROJECT_DB; Integrated Security = True; Encrypt = False");
         private string username;
         private string password;
+        private int userid;
+        private DateTime start = DateTime.MinValue;
 
         public CodeEditor(string username, string password) {
             InitializeComponent();
@@ -18,24 +21,26 @@ namespace IDE_Project {
             panel1.MouseDown += new MouseEventHandler(move_window);
             this.username = username;
             this.password = password;
+            this.userid = 0;
         }
 
         private void CodeEditor_Load(object sender, EventArgs e) {
             //originalFormsSize = new Rectangle(this.Location.X, this.Location.Y, this.Width, this.Height);
-            originalFormsSize = new Rectangle(0, 0, 1024, 576);
+            //originalFormsSize = new Rectangle(0, 0, 1024, 576);
             //exitButtonOriginalRectangle = new Rectangle(exitButton.Location.X, exitButton.Location.Y, exitButton.Width, exitButton.Height);
-            exitButtonOriginalRectangle = new Rectangle(987, 4, 24, 25);
-            panel1OriginalRectangle = new Rectangle(panel1.Location.X, panel1.Location.Y, panel1.Width, panel1.Height); //new Rectangle(0, 0, 1024, 34);
+            //exitButtonOriginalRectangle = new Rectangle(987, 4, 24, 25);
+            //panel1OriginalRectangle = new Rectangle(panel1.Location.X, panel1.Location.Y, panel1.Width, panel1.Height); //new Rectangle(0, 0, 1024, 34);
                                                                                                                         //resizeControl(exitButtonOriginalRectangle, exitButton);
             try {
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
-                String query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
+                string query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
                 SqlDataAdapter sda = new SqlDataAdapter(query, connection);
                 DataTable dtbl = new DataTable();
                 sda.Fill(dtbl);
 
                 if (dtbl.Rows.Count > 0) {
+                    this.userid = Convert.ToInt32(dtbl.Rows[0]["id"].ToString());
                     accountToolStripMenuItem.Text = dtbl.Rows[0]["user_name"].ToString();
                 }
                 else {
@@ -45,6 +50,9 @@ namespace IDE_Project {
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
+            }
+            finally {
+                connection.Close();
             }
         }
 
@@ -59,9 +67,9 @@ namespace IDE_Project {
         const int WM_NCLBUTTONDOWN = 0xA1;
         const int HT_CAPTION = 0x2;
 
-        private Rectangle originalFormsSize;
-        private Rectangle exitButtonOriginalRectangle;
-        private Rectangle panel1OriginalRectangle;
+        //private Rectangle originalFormsSize;
+        //private Rectangle exitButtonOriginalRectangle;
+        //private Rectangle panel1OriginalRectangle;
 
         protected override void WndProc(ref Message m) {
             if (m.Msg == 0x84) {
@@ -86,19 +94,19 @@ namespace IDE_Project {
             }
         }
 
-        private void resizeControl(Rectangle r, Control c) {
-            float xRatio = (float)(this.Width) / (float)(originalFormsSize.Width);
-            float yRatio = (float)(this.Height) / (float)(originalFormsSize.Height);
+        //private void resizeControl(Rectangle r, Control c) {
+        //    float xRatio = (float)(this.Width) / (float)(originalFormsSize.Width);
+        //    float yRatio = (float)(this.Height) / (float)(originalFormsSize.Height);
 
-            int newX = (int)(r.Location.X * xRatio);
-            int newY = (int)(r.Location.Y * yRatio);
+        //    int newX = (int)(r.Location.X * xRatio);
+        //    int newY = (int)(r.Location.Y * yRatio);
 
-            int newWidth = (int)(r.Width * xRatio);
-            int newHeight = (int)(r.Height * yRatio);
+        //    int newWidth = (int)(r.Width * xRatio);
+        //    int newHeight = (int)(r.Height * yRatio);
 
-            c.Location = new Point(newX, newY);
-            c.Size = new Size(newWidth, newHeight);
-        }
+        //    c.Location = new Point(newX, newY);
+        //    c.Size = new Size(newWidth, newHeight);
+        //}
 
         private void CodeEditor_Resize(object sender, EventArgs e) {
             //resizeControl(exitButtonOriginalRectangle, exitButton);
@@ -240,7 +248,170 @@ namespace IDE_Project {
             }
             else {
                 // open file
-                codeRichTextBox.Text = File.ReadAllText(((FileInfo)e.Node.Tag).FullName);
+                try {
+                    if (connection.State != ConnectionState.Open)
+                        connection.Open();
+                    string query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
+                    SqlDataAdapter sda = new SqlDataAdapter(query, connection);
+                    DataTable dtblUsr = new DataTable();
+                    sda.Fill(dtblUsr);
+
+                    if (dtblUsr.Rows.Count > 0) {
+                        query = "SELECT * FROM CODING WHERE user_id = '" + this.userid + "'";
+                        SqlCommand cmdLang = new SqlCommand(query, connection);
+                        sda = new SqlDataAdapter(query, connection);
+                        DataTable dtblLang = new DataTable();
+                        sda.Fill(dtblLang);
+
+                        if (dtblLang.Rows.Count > 0) {
+                            if (start == DateTime.MinValue)
+                                start = DateTime.Now;
+                            else {
+                                int pointIndex = ((FileInfo)e.Node.Tag).Name.IndexOf("."); //.IndexOf(".");
+                                if (pointIndex != -1) {
+                                    string extention = ((FileInfo)e.Node.Tag).Name.Substring(pointIndex);
+                                    TimeSpan span = (DateTime.Now - start);
+                                    double unixTime = span.TotalSeconds;
+
+                                    if (extention == ".c") {
+                                        //query = "UPDATE CODING SET lang_c = lang_c + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_c = lang_c + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_c = lang_c + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if (extention == ".cpp") {
+                                        //query = "UPDATE CODING SET lang_cpp = lang_cpp + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_cpp = lang_cpp + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_cpp = lang_cpp + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".cs")) {
+                                        //query = "UPDATE CODING SET lang_cs = lang_cs + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_cs = lang_cs + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_cs = lang_cs + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".java")) {
+                                        //query = "UPDATE CODING SET lang_java = lang_java + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_java = lang_java + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_java = lang_java + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".js")) {
+                                        //query = "UPDATE CODING SET lang_js = lang_js + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_js = lang_js + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_js = lang_js + " + Convert.ToString(unixTime) + " WHERE user_id =   
+                                    }
+                                    else if ((extention == ".php")) {
+                                        //query = "UPDATE CODING SET lang_php = lang_php + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_php = lang_php + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_php = lang_php + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".py")) {
+                                        //query = "UPDATE CODING SET lang_py = lang_py + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_py = lang_py + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_py = lang_py + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".sql")) {
+                                        //query = "UPDATE CODING SET lang_sql = lang_sql + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_sql = lang_sql + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_sql = lang_sql + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        //cmdLang.ExecuteNonQuery();
+                                    }
+                                    else {
+                                        //query = "UPDATE CODING SET lang_other = lang_other + " + Convert.ToString(unixTime) + " WHERE user_id = '" + this.userid + "'";
+                                        query = "UPDATE CODING SET lang_other = lang_other + 1 WHERE user_id = '" + this.userid + "'";
+                                        SqlCommand cmd = new SqlCommand(query, connection);
+                                        cmd.ExecuteNonQuery();
+                                        //cmdLang.CommandText = "UPDATE CODING SET lang_other = lang_other + " + Convert.ToString(unixTime) + " WHERE
+                                    }
+                                }
+                            }
+                        }
+
+                        else {
+                            query = "INSERT INTO CODING (user_id, lang_c, lang_cpp, lang_cs, lang_java, lang_js, lang_php, lang_py, lang_sql, lang_other) VALUES ('" + this.userid + "', 0, 0, 0, 0, 0, 0, 0, 0, 0)";
+                            SqlCommand cmd = new SqlCommand(query, connection);
+                            cmd.ExecuteNonQuery();
+
+                            if (start == DateTime.MinValue)
+                                start = DateTime.Now;
+                            else {
+                                int pointIndex = ((FileInfo)e.Node.Tag).FullName.IndexOf(".");
+                                TimeSpan span = (DateTime.Now - start);
+                                double unixTime = span.TotalSeconds;
+                                if (pointIndex != -1) {
+                                    string extention = ((FileInfo)e.Node.Tag).FullName.Substring(pointIndex + 1);
+                                    if (extention == ".c") {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_c = lang_c + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if (extention == ".cpp") {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_cpp = lang_cpp + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".cs")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_cs = lang_cs + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".java")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_java = lang_java + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".js")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_js = lang_js + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".php")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_php = lang_php + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".py")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_py = lang_py + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else if ((extention == ".sql")) {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_sql = lang_sql + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                    else {
+                                        cmdLang.CommandText = "UPDATE CODING SET lang_other = lang_other + 1 WHERE user_id = '" + this.userid + "'";
+                                        cmdLang.ExecuteNonQuery();
+                                    }
+                                }
+                                else
+                                    MessageBox.Show("File type is not supported.");
+                                this.start = DateTime.Now;
+                            }
+                        }
+
+                        codeRichTextBox.Text = File.ReadAllText(((FileInfo)e.Node.Tag).FullName);
+                    }
+                }
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                }
+                finally {
+                    connection.Close();
+                }
             }
         }
 
@@ -257,8 +428,8 @@ namespace IDE_Project {
         private void accountToolStripMenuItem_Click(object sender, EventArgs e) {
             try {
                 if (connection.State != ConnectionState.Open)
-                    connection.Open();
-                String query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
+                connection.Open();
+                string query = "SELECT * FROM USERS WHERE user_name = '" + username + "' AND password = '" + password + "'";
                 SqlDataAdapter sda = new SqlDataAdapter(query, connection);
                 DataTable dtbl = new DataTable();
                 sda.Fill(dtbl);
@@ -283,10 +454,14 @@ namespace IDE_Project {
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
+            finally {
+                connection.Close();
+            }
         }
 
         private void statisticsToolStripMenuItem_Click(object sender, EventArgs e) {
-
+            var form = new StatisticsPage(username, password);
+            form.Show();
         }
     }
 }
